@@ -1,1 +1,86 @@
-﻿<!-- Dashboard screen -->
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>TrackSimpli – Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 18px;
+      padding: 24px;
+      width: 90%;
+      max-width: 360px;
+    }
+
+    h1 {
+      margin: 0 0 12px 0;
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    .stat {
+      font-size: 14px;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 6px;
+    }
+
+    .big {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      font-size: 16px;
+      font-weight: 800;
+      background: #2a3cff;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      margin-top: 10px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <h1>TrackSimpli</h1>
+
+    <div class="stat">Last test</div>
+    <div class="big">Pushups</div>
+
+    <button onclick="goToTest()">Start Test</button>
+    <button class="secondary" onclick="alert('Coming soon')">
+      History
+    </button>
+  </div>
+
+  <script>
+    function goToTest() {
+      window.location.href = "./test.html";
+    }
+  </script>
+</body>
+</html>
