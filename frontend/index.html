@@ -2,94 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>TrackSimpli • Pushups</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <meta name="theme-color" content="#000000" />
-  <link rel="stylesheet" href="/styles.css" />
+  <title>TrackSimpli</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- TFJS + Pose Detection (MoveNet) -->
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.15.0"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/screens.css" />
 </head>
 
 <body>
-  <video id="video" playsinline></video>
-  <canvas id="overlay"></canvas>
-
-  <div id="topbar">
-    <div id="logo">
-      TrackSimpli
-      <span class="dot">•</span>
-      <span class="subtle">Pushups</span>
-    </div>
-    <div id="badge">Ready</div>
-    <button id="menuBtn" type="button">Stats</button>
+  <div id="app">
+    <!-- Screens injected here -->
   </div>
 
-  <div id="challenge"></div>
-
-  <div id="hud">
-    <div id="bigRow">
-      <div id="reps">0</div>
-      <div id="subStats">
-        <div class="chip" id="chipTime">00:00</div>
-        <div class="chip" id="chipQuality">Quality: —</div>
-        <div class="chip" id="chipStreak">Streak: —</div>
-      </div>
-    </div>
-
-    <div id="controls">
-      <button id="btnMain" type="button">START</button>
-      <button class="secondary" id="btnPause" type="button" disabled>PAUSE</button>
-      <button class="danger" id="btnEnd" type="button" disabled>END</button>
-    </div>
-  </div>
-
-  <aside id="drawer" aria-hidden="true">
-    <h2>Dashboard</h2>
-
-    <div class="card">
-      <div class="row"><div class="k">Today</div><div class="v" id="dToday">—</div></div>
-      <div class="row"><div class="k">Personal Best (reps)</div><div class="v" id="dPB">—</div></div>
-      <div class="row"><div class="k">Streak</div><div class="v" id="dStreak">—</div></div>
-      <button class="smallBtn" id="btnHistory" type="button">View History</button>
-    </div>
-
-    <div class="card">
-      <div class="k">Last session</div>
-      <div class="v" id="dLast">—</div>
-      <div class="tiny" id="dLastDetail" style="margin-top:6px;">No history yet.</div>
-      <button class="smallBtn" id="btnShareLast" type="button" disabled>Share last result</button>
-      <button class="smallBtn" id="btnChallengeLink" type="button" disabled>Copy challenge link</button>
-    </div>
-
-    <div class="card">
-      <div class="k">Quality breakdown</div>
-      <div class="tiny" id="dQuality">Depth, tempo, and body line. No half-rep heroics.</div>
-    </div>
-
-    <div class="card">
-      <div class="k">Tools</div>
-      <button class="smallBtn" id="btnResetLocal" type="button">Reset local data</button>
-      <div class="tiny" style="margin-top:8px;">
-        Note: history is stored on this device only (no login yet).
-      </div>
-    </div>
-  </aside>
-
-  <!-- Modal -->
-  <div id="modalWrap" aria-hidden="true">
-    <div id="modal">
-      <h3 id="modalTitle">Modal</h3>
-      <div id="modalBody" class="tiny"></div>
-      <div id="modalBtns">
-        <button class="secondary" id="btnModalClose" type="button">Close</button>
-      </div>
-    </div>
-  </div>
-
-  <canvas id="shareCanvas"></canvas>
-
-  <script type="module" src="/js/app.js"></script>
+  <!-- JS -->
+  <script src="js/router.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>

@@ -1,0 +1,72 @@
+/* Modal */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal-card {
+  background: var(--panel);
+  border-radius: var(--radius);
+  padding: 16px;
+  width: 90%;
+  max-width: 420px;
+}
+
+.modal-title {
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* Navbar */
+.navbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  background: rgba(0,0,0,.85);
+  border-top: 1px solid var(--border);
+}
+
+.navbar button {
+  flex: 1;
+  padding: 14px 0;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.navbar button.active {
+  color: white;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,.8);
+  color: white;
+  padding: 10px 14px;
+  border-radius: 999px;
+  opacity: 0;
+  transition: opacity .2s;
+  z-index: 200;
+}
+
+.toast.show {
+  opacity: 1;
+}
