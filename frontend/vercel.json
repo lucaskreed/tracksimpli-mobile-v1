@@ -1,5 +1,12 @@
 {
   "routes": [
-    { "src": "/(.*)", "dest": "/index.html" }
+    {
+      "src": "^/(css|js|assets|screens)/(.*)",
+      "dest": "/$1/$2"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
   ]
 }
