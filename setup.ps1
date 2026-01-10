@@ -1,70 +1,45 @@
-Write-Host "Setting up TrackSimpli frontend structure..."
+Write-Host "Setting up TrackSimpli frontend structure..." -ForegroundColor Cyan
 
-function Touch($path) {
-    if (!(Test-Path $path)) {
-        New-Item -ItemType File -Path $path | Out-Null
+$base = "frontend"
+
+$folders = @(
+    "$base/screens",
+    "$base/css",
+    "$base/js"
+)
+
+$files = @{
+    "$base/index.html"              = "<!DOCTYPE html>`n<html><head><meta charset='utf-8'><title>TrackSimpli</title></head><body></body></html>"
+    "$base/screens/dashboard.html"  = "<!-- Dashboard screen -->"
+    "$base/screens/test.html"       = "<!-- Camera test screen -->"
+    "$base/screens/history.html"    = "<!-- History screen -->"
+    "$base/screens/settings.html"   = "<!-- Settings screen -->"
+    "$base/css/base.css"            = "/* Base styles */"
+    "$base/css/layout.css"          = "/* Layout styles */"
+    "$base/css/components.css"      = "/* UI components */"
+    "$base/js/app.js"               = "// App entry logic"
+    "$base/js/storage.js"           = "// localStorage helpers"
+    "$base/js/utils.js"             = "// time, math helpers"
+}
+
+# Create folders
+foreach ($folder in $folders) {
+    if (-not (Test-Path $folder)) {
+        New-Item -ItemType Directory -Path $folder | Out-Null
+        Write-Host "Created folder: $folder" -ForegroundColor Green
+    } else {
+        Write-Host "Folder exists: $folder" -ForegroundColor DarkGray
     }
 }
 
-# Root frontend folder
-New-Item -ItemType Directory -Force -Path frontend | Out-Null
+# Create files if they don’t exist
+foreach ($file in $files.Keys) {
+    if (-not (Test-Path $file)) {
+        $files[$file] | Out-File -Encoding utf8 $file
+        Write-Host "Created file: $file" -ForegroundColor Green
+    } else {
+        Write-Host "File exists: $file" -ForegroundColor DarkGray
+    }
+}
 
-# Core files
-Touch frontend/index.html
-Touch frontend/vercel.json
-
-# Assets
-New-Item -ItemType Directory -Force -Path `
-frontend/assets, `
-frontend/assets/images, `
-frontend/assets/icons | Out-Null
-
-# CSS
-New-Item -ItemType Directory -Force -Path frontend/css | Out-Null
-Touch frontend/css/base.css
-Touch frontend/css/layout.css
-Touch frontend/css/components.css
-Touch frontend/css/screens.css
-
-# JS structure
-New-Item -ItemType Directory -Force -Path `
-frontend/js, `
-frontend/js/screens, `
-frontend/js/components, `
-frontend/js/services, `
-frontend/js/utils | Out-Null
-
-Touch frontend/js/app.js
-Touch frontend/js/router.js
-
-# Screen logic
-Touch frontend/js/screens/test.js
-Touch frontend/js/screens/dashboard.js
-Touch frontend/js/screens/history.js
-Touch frontend/js/screens/login.js
-Touch frontend/js/screens/settings.js
-
-# Components
-Touch frontend/js/components/navbar.js
-Touch frontend/js/components/modal.js
-Touch frontend/js/components/toast.js
-
-# Services
-Touch frontend/js/services/api.js
-Touch frontend/js/services/storage.js
-Touch frontend/js/services/share.js
-
-# Utils
-Touch frontend/js/utils/time.js
-Touch frontend/js/utils/math.js
-Touch frontend/js/utils/ids.js
-
-# HTML screen templates
-New-Item -ItemType Directory -Force -Path frontend/screens | Out-Null
-Touch frontend/screens/test.html
-Touch frontend/screens/dashboard.html
-Touch frontend/screens/history.html
-Touch frontend/screens/login.html
-Touch frontend/screens/settings.html
-
-Write-Host "Frontend setup complete."
+Write-Host "Setup complete." -ForegroundColor Cyan
