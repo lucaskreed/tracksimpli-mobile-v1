@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>TrackSimpli</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.15.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>
+<style>
+body {
+  margin:0;
+  background:#000;
+  color:white;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow:hidden;
+}
+#video, #overlay {
+  position:fixed;
+  top:0; left:0;
+  width:100vw; height:100vh;
+  object-fit:cover;
+}
+#overlay { pointer-events:none; }
+#hud {
+  position:fixed;
+  bottom:0; left:0;
+  width:100%;
+  background:linear-gradient(transparent, rgba(0,0,0,0.8));
+  padding:22px;
+}
+#reps {
+  font-size:64px;
+  font-weight:800;
+}
+button {
+  width:100%;
+  font-size:22px;
+  padding:18px;
+  margin-top:14px;
+  border-radius:16px;
+  border:none;
+  background:#2a3cff;
+  color:white;
+}
+</style>
+</head>
+<body>
+
+<video id="video" playsinline></video>
+<canvas id="overlay"></canvas>
+
+<div id="hud">
+  <div id="reps">0</div>
+  <button id="btn" onclick="toggle()">START</button>
+</div>
+
+<script>
+let detector, running=false, reps=0, down=false, lastPhase=Date.now();
+const video=document.getElementById("video");
+const canvas=document.getElementById("overlay");
+const ctx=canvas.getContext("2d");
+const repsBox=document.getElementById("reps");
+const btn=document.getElementById("btn");
+
+function angle(a,b,c){
+  const ab=[a.x-b.x,a.y-b.y], cb=[c.x-b.x,c.y-b.y];
+  const dot=ab[0]*cb[0]+ab[1]*cb[1];
+  const mag=Math.hypot(...ab)*Math.hypot(...cb);
+  return mag?Math.acos(dot/mag)*180/Math.PI:180;
+}
+
+async function toggle(){
+  if(!running){
+    const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"user"}});
+    video.srcObject=stream;
+    await video.play();
+
+    canvas.width=video.videoWidth;
+    canvas.height=video.videoHeight;
+
+    detector=await poseDetection.createDetector(
+      poseDetection.SupportedModels.MoveNet,
+      {modelType:poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING}
+    );
+
+    reps=0; down=false; lastPhase=Date.now();
+    running=true;
+    btn.innerText="STOP";
+    loop();
+  }else{
+    running=false;
+    btn.innerText="START";
+  }
+}
+
+async function loop(){
+  if(!running) return;
+  const poses=await detector.estimatePoses(video);
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  if(poses[0]){
+    const lm=poses[0].keypoints;
+    const s=lm[5], e=lm[7], w=lm[9], h=lm[11];
+    const a=angle(s,e,w);
+    const now=Date.now();
+
+    if(a<85 && !down && now-lastPhase>500){ down=true; lastPhase=now; }
+    if(a>165 && down && now-lastPhase>400 && Math.abs(h.y-s.y)<120){
+      reps++; down=false; lastPhase=now;
+    }
+
+    repsBox.innerText=reps;
+    [s,e,w].forEach(p=>{
+      ctx.beginPath(); ctx.arc(p.x,p.y,8,0,Math.PI*2); ctx.fillStyle="#00ff00"; ctx.fill();
+    });
+  }
+  requestAnimationFrame(loop);
+}
+</script>
+</body>
+</html>
