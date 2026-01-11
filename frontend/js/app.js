@@ -1,123 +1,131 @@
 ﻿// frontend/js/app.js
 
-import { initHUD, updateHUD } from "./ui/hud.js";
-import { initDrawer } from "./ui/drawer.js";
-import { showSaveModal, closeModal } from "./ui/modal.js";
+let detector;
+let running = false;
+let reps = 0;
+let down = false;
+let lastPhase = Date.now();
 
-// --------------------
-// Global workout state
-// --------------------
-export const state = {
-  running: false,
-  paused: false,
-  reps: 0,
+const video = document.getElementById("video");
+const canvas = document.getElementById("overlay");
+const ctx = canvas.getContext("2d");
+const repsBox = document.getElementById("reps");
+const btn = document.getElementById("btn");
 
-  startTs: 0,
-  pauseStart: 0,
-  pauseAccumMs: 0
+// ----------------------------
+// Utils
+// ----------------------------
+function angle(a, b, c) {
+  const ab = [a.x - b.x, a.y - b.y];
+  const cb = [c.x - b.x, c.y - b.y];
+  const dot = ab[0] * cb[0] + ab[1] * cb[1];
+  const mag = Math.hypot(...ab) * Math.hypot(...cb);
+  return mag ? Math.acos(dot / mag) * 180 / Math.PI : 180;
+}
+
+// ----------------------------
+// Start / Stop
+// ----------------------------
+btn.onclick = async () => {
+  if (!running) {
+    await start();
+    btn.textContent = "STOP";
+  } else {
+    stop();
+    btn.textContent = "START";
+  }
 };
 
-// --------------------
-// Entry point
-// --------------------
-window.addEventListener("DOMContentLoaded", () => {
-  initHUD({
-    onStart: startWorkout,
-    onPause: togglePause,
-    onEnd: endWorkout
-  });
+async function start() {
+  running = true;
+  reps = 0;
+  down = false;
+  repsBox.textContent = "0";
 
-  initDrawer();
-});
-
-// --------------------
-// Workout controls
-// --------------------
-async function startWorkout() {
-  if (state.running) return;
-
-  state.running = true;
-  state.paused = false;
-  state.reps = 0;
-  state.startTs = Date.now();
-  state.pauseAccumMs = 0;
-
-  await startCamera();
-  requestAnimationFrame(loop);
-}
-
-function togglePause() {
-  if (!state.running) return;
-
-  state.paused = !state.paused;
-
-  if (state.paused) {
-    state.pauseStart = Date.now();
-  } else {
-    state.pauseAccumMs += Date.now() - state.pauseStart;
-  }
-}
-
-function endWorkout() {
-  if (!state.running) return;
-
-  state.running = false;
-  stopCamera();
-
-  showSaveModal({
-    reps: state.reps,
-    time: getElapsedTime(),
-    quality: { total: 0 }, // placeholder until scoring module
-    onSave: saveWorkout,
-    onClose: closeModal
-  });
-}
-
-// --------------------
-// Core loop
-// --------------------
-function loop() {
-  if (!state.running || state.paused) return;
-
-  // This is where pose detection + rep counting goes later
-  // For now, fake reps so UI proves it works
-  state.reps += Math.random() < 0.01 ? 1 : 0;
-
-  updateHUD(state, null);
-
-  requestAnimationFrame(loop);
-}
-
-// --------------------
-// Helpers
-// --------------------
-function getElapsedTime() {
-  const now = Date.now();
-  const elapsed =
-    (state.paused ? state.pauseStart : now) -
-    state.startTs -
-    state.pauseAccumMs;
-
-  return elapsed;
-}
-
-// --------------------
-// Camera (minimal)
-// --------------------
-let stream = null;
-
-async function startCamera() {
-  const video = document.getElementById("video");
-  stream = await navigator.mediaDevices.getUserMedia({
+  const stream = await navigator.mediaDevices.getUserMedia({
     video: { facingMode: "user" },
     audio: false
   });
+
   video.srcObject = stream;
   await video.play();
+
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+
+  detector = await poseDetection.createDetector(
+    poseDetection.SupportedModels.MoveNet,
+    { modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING }
+  );
+
+  requestAnimationFrame(loop);
 }
 
-function stopCamera() {
-  if (!stream) return;
-  stream.getTracks().forEach(t => t.stop());
-  stream = null;
+function stop() {
+  running = false;
+  if (video.srcObject) {
+    video.srcObject.getTracks().forEach(t => t.stop());
+    video.srcObject = null;
+  }
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+// ----------------------------
+// Loop
+// ----------------------------
+async function loop() {
+  if (!running) return;
+
+  const poses = await detector.estimatePoses(video);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  if (poses[0]) {
+    const lm = poses[0].keypoints;
+    const s = lm[5];  // shoulder
+    const e = lm[7];  // elbow
+    const w = lm[9];  // wrist
+    const h = lm[11]; // hip
+
+    if (s.score > 0.3 && e.score > 0.3 && w.score > 0.3) {
+      const a = angle(s, e, w);
+      const align = Math.abs(h.y - s.y);
+      const now = Date.now();
+
+      if (a < 85 && !down && now - lastPhase > 500) {
+        down = true;
+        lastPhase = now;
+      }
+
+      if (a > 165 && down && now - lastPhase > 400 && align < 120) {
+        reps++;
+        down = false;
+        lastPhase = now;
+        repsBox.textContent = reps;
+      }
+
+      draw(s); draw(e); draw(w);
+      line(s, e); line(e, w); line(s, h);
+    }
+  }
+
+  requestAnimationFrame(loop);
+}
+
+// ----------------------------
+// Draw helpers
+// ----------------------------
+function draw(p) {
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, 7, 0, Math.PI * 2);
+  ctx.fillStyle = "#00ff00";
+  ctx.fill();
+}
+
+function line(a, b) {
+  ctx.beginPath();
+  ctx.moveTo(a.x, a.y);
+  ctx.lineTo(b.x, b.y);
+  ctx.strokeStyle = "rgba(0,255,0,.7)";
+  ctx.lineWidth = 3;
+  ctx.stroke();
 }

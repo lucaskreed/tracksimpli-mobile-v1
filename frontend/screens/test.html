@@ -1,66 +1,30 @@
-﻿<!-- frontend/screens/test.html -->
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>TrackSimpli – Test</title>
+  <title>TrackSimpli – Pushups</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- TensorFlow -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.15.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>
 
   <!-- Styles -->
   <link rel="stylesheet" href="../css/base.css" />
-  <link rel="stylesheet" href="../css/layout.css" />
   <link rel="stylesheet" href="../css/components.css" />
-  <link rel="stylesheet" href="../css/screens.css" />
 </head>
 
 <body>
 
-  <!-- Camera -->
   <video id="video" playsinline></video>
   <canvas id="overlay"></canvas>
 
-  <!-- Top bar -->
-  <div id="topbar">
-    <div id="logo">TrackSimpli • Pushups</div>
-    <div id="badge">Ready</div>
-    <button id="menuBtn">Stats</button>
-  </div>
-
-  <!-- HUD -->
   <div id="hud">
-    <div id="bigRow">
-      <div id="reps">0</div>
-      <div id="subStats">
-        <div class="chip" id="chipTime">00:00</div>
-        <div class="chip" id="chipQuality">Quality: —</div>
-      </div>
-    </div>
-
-    <div id="controls">
-      <button id="btnMain">START</button>
-      <button id="btnPause" class="secondary" disabled>PAUSE</button>
-      <button id="btnEnd" class="danger" disabled>END</button>
-    </div>
+    <div id="reps">0</div>
+    <button id="btn">START</button>
   </div>
 
-  <!-- Drawer -->
-  <div id="drawer">
-    <h2>Stats</h2>
-    <div class="card">
-      <div>History coming soon</div>
-    </div>
-  </div>
-
-  <!-- Modal -->
-  <div id="modalWrap">
-    <div id="modal">
-      <h3 id="modalTitle"></h3>
-      <div id="modalBody"></div>
-      <div id="modalBtns"></div>
-    </div>
-  </div>
-
-  <!-- App -->
+  <!-- IMPORTANT: module -->
   <script type="module" src="../js/app.js"></script>
 </body>
 </html>
