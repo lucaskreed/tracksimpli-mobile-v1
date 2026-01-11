@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="theme-color" content="#0b0d10" />
+  <title>TrackSimpli • Progress</title>
+
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <style>
+    .chart-wrap{ padding:12px; }
+    .chart{
+      width:100%;
+      height:240px;
+      display:block;
+      border-radius:18px;
+    }
+  </style>
+</head>
+<body data-page="progress">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">TS</div>
+      <div class="brand-text">
+        <div class="brand-name">Progress</div>
+        <div class="brand-sub" id="progressLabel">—</div>
+      </div>
+    </div>
+    <a class="icon-btn" href="./settings.html" aria-label="Settings">⚙️</a>
+  </header>
+
+  <main class="page">
+    <section class="card">
+      <div class="form">
+        <div class="field">
+          <div class="label">Test</div>
+          <select id="progressTest" class="select"></select>
+        </div>
+        <div class="help">Bars show session results over time. Nothing fancy. Just truth.</div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="progressChart" class="chart"></canvas>
+      </div>
+    </section>
+  </main>
+
+  <nav class="navbar" aria-label="Primary">
+    <a class="nav-item" href="../index.html" data-nav="dashboard">
+      <span class="nav-ico">🏠</span><span class="nav-txt">Feed</span>
+    </a>
+    <a class="nav-item" href="./test.html" data-nav="test">
+      <span class="nav-ico">➕</span><span class="nav-txt">Test</span>
+    </a>
+    <a class="nav-item active" href="./progress.html" data-nav="progress">
+      <span class="nav-ico">📈</span><span class="nav-txt">Progress</span>
+    </a>
+    <a class="nav-item" href="./history.html" data-nav="history">
+      <span class="nav-ico">🗂️</span><span class="nav-txt">History</span>
+    </a>
+    <a class="nav-item" href="./settings.html" data-nav="settings">
+      <span class="nav-ico">👤</span><span class="nav-txt">Profile</span>
+    </a>
+  </nav>
+
+  <div id="toastHost" class="toast-host" aria-live="polite" aria-atomic="true"></div>
+
+  <script type="module" src="../js/app.js"></script>
+</body>
+</html>

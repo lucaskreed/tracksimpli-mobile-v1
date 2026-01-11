@@ -1,1 +1,74 @@
-﻿<!-- History screen -->
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="theme-color" content="#0b0d10" />
+  <title>TrackSimpli • History</title>
+
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+</head>
+<body data-page="history">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">TS</div>
+      <div class="brand-text">
+        <div class="brand-name">History</div>
+        <div class="brand-sub">Everything you did, objectively.</div>
+      </div>
+    </div>
+    <a class="icon-btn" href="./settings.html" aria-label="Settings">⚙️</a>
+  </header>
+
+  <main class="page">
+    <section class="card">
+      <div class="form">
+        <div class="row">
+          <div class="field">
+            <div class="label">Filter</div>
+            <select id="historyFilter" class="select"></select>
+          </div>
+          <div class="field">
+            <div class="label">Export</div>
+            <button class="btn ghost" id="btnExport" type="button">Download JSON</button>
+          </div>
+        </div>
+        <div class="help">Local-only for now. Login later when you want the extra pain.</div>
+        <button class="btn" id="btnClear" type="button">Clear Local History</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-head">
+        <div class="section-title">Sessions</div>
+        <a class="link" href="./progress.html">Progress</a>
+      </div>
+      <div id="historyList" class="feed"></div>
+    </section>
+  </main>
+
+  <nav class="navbar" aria-label="Primary">
+    <a class="nav-item" href="../index.html" data-nav="dashboard">
+      <span class="nav-ico">🏠</span><span class="nav-txt">Feed</span>
+    </a>
+    <a class="nav-item" href="./test.html" data-nav="test">
+      <span class="nav-ico">➕</span><span class="nav-txt">Test</span>
+    </a>
+    <a class="nav-item" href="./progress.html" data-nav="progress">
+      <span class="nav-ico">📈</span><span class="nav-txt">Progress</span>
+    </a>
+    <a class="nav-item active" href="./history.html" data-nav="history">
+      <span class="nav-ico">🗂️</span><span class="nav-txt">History</span>
+    </a>
+    <a class="nav-item" href="./settings.html" data-nav="settings">
+      <span class="nav-ico">👤</span><span class="nav-txt">Profile</span>
+    </a>
+  </nav>
+
+  <div id="toastHost" class="toast-host" aria-live="polite" aria-atomic="true"></div>
+
+  <script type="module" src="../js/app.js"></script>
+</body>
+</html>

@@ -1,24 +1,57 @@
-﻿:root {
-  --bg:#000;
-  --panel: rgba(0,0,0,.72);
-  --panel2: rgba(0,0,0,.88);
-  --text:#fff;
-  --muted: rgba(255,255,255,.72);
-  --brand:#2a3cff;
+﻿:root{
+  --bg: #0b0d10;
+  --bg2:#07090b;
+  --card: rgba(255,255,255,.06);
+  --card2: rgba(255,255,255,.08);
+  --border: rgba(255,255,255,.12);
+  --text: rgba(255,255,255,.92);
+  --muted: rgba(255,255,255,.68);
+  --muted2: rgba(255,255,255,.52);
+
+  --brand: #2a3cff;
+  --brand2: rgba(42,60,255,.22);
+
   --good:#28d17c;
   --warn:#ffcc00;
   --bad:#ff3b30;
-  --card:#0b0d10;
-  --border: rgba(255,255,255,.12);
-  --radius: 18px;
+
+  --shadow: 0 20px 60px rgba(0,0,0,.5);
+  --r12: 12px;
+  --r16: 16px;
+  --r20: 20px;
+
+  --nav-h: 76px;
+  --maxw: 720px;
 }
 
-* { box-sizing: border-box; }
-
-body {
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
   margin:0;
-  background:var(--bg);
   color:var(--text);
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  overflow:hidden;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+  background:
+    radial-gradient(1200px 800px at 20% -10%, rgba(42,60,255,.25), transparent 55%),
+    radial-gradient(900px 700px at 80% 0%, rgba(40,209,124,.10), transparent 55%),
+    linear-gradient(180deg, var(--bg), var(--bg2));
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a{ color:inherit; text-decoration:none; }
+button, input, select, textarea{ font:inherit; color:inherit; }
+img{ max-width:100%; display:block; }
+
+::selection{ background: rgba(42,60,255,.35); }
+
+.hidden{ display:none !important; }
+.muted{ color:var(--muted); }
+
+.kbd{
+  font-size:12px;
+  padding:2px 8px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:rgba(0,0,0,.25);
+  color:var(--muted);
 }
