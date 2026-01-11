@@ -1,1 +1,24 @@
-﻿/* Base styles */
+﻿:root {
+  --bg:#000;
+  --panel: rgba(0,0,0,.72);
+  --panel2: rgba(0,0,0,.88);
+  --text:#fff;
+  --muted: rgba(255,255,255,.72);
+  --brand:#2a3cff;
+  --good:#28d17c;
+  --warn:#ffcc00;
+  --bad:#ff3b30;
+  --card:#0b0d10;
+  --border: rgba(255,255,255,.12);
+  --radius: 18px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  overflow:hidden;
+}

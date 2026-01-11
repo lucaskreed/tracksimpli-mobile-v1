@@ -1,1 +1,23 @@
-﻿/* Layout styles */
+﻿#video, #overlay {
+  position:fixed;
+  top:0; left:0;
+  width:100vw;
+  height:100vh;
+  object-fit:cover;
+}
+
+#topbar {
+  position:fixed;
+  top:0; left:0;
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  padding:12px 14px;
+}
+
+#hud {
+  position:fixed;
+  bottom:0;
+  width:100%;
+  padding:18px 14px;
+}
