@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Continue</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light" />
+  <meta name="theme-color" content="#f7f6f3" />
+
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/auth.css" />
+</head>
+
+<body class="auth light">
+  <main class="auth-flow">
+    <h1 class="auth-question">What’s your email?</h1>
+
+    <p class="auth-subtext">
+      We’ll use this to sign you in and keep your progress connected.
+    </p>
+
+    <div class="email-input">
+      <input
+        id="email"
+        type="email"
+        placeholder="you@example.com"
+        autocomplete="email"
+        required
+      />
+    </div>
+
+    <button class="btn primary" id="continueBtn">
+      Continue with email
+    </button>
+
+    <div class="divider">
+      <span>or</span>
+    </div>
+
+    <button class="btn secondary">
+      Continue with Google
+    </button>
+  </main>
+
+  <script src="../js/auth.js" defer></script>
+</body>
+</html>
