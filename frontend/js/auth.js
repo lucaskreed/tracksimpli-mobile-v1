@@ -1,16 +1,19 @@
+const form = document.getElementById("loginForm");
 const emailInput = document.getElementById("email");
-const continueBtn = document.getElementById("continueBtn");
 
-if (continueBtn && emailInput) {
-  continueBtn.addEventListener("click", () => {
+if (form && emailInput) {
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
     const email = emailInput.value.trim();
-
     if (!email) {
       emailInput.focus();
       return;
     }
 
-    console.log("Continue with email:", email);
-    // next step: send magic link OR show password screen
+    localStorage.setItem("loggedIn", "true");
+    localStorage.setItem("userEmail", email);
+
+    window.location.href = "dashboard.html";
   });
 }

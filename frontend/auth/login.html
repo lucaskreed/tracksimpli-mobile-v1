@@ -20,26 +20,28 @@
       We’ll use this to sign you in and keep your progress connected.
     </p>
 
-    <div class="email-input">
-      <input
-        id="email"
-        type="email"
-        placeholder="you@example.com"
-        autocomplete="email"
-        required
-      />
-    </div>
+    <form id="loginForm">
+      <div class="email-input">
+        <input
+          id="email"
+          type="email"
+          placeholder="you@example.com"
+          autocomplete="email"
+          required
+        />
+      </div>
 
-    <button class="btn primary" id="continueBtn">
-      Continue with email
-    </button>
+      <button class="btn primary" type="submit">
+        Continue with email
+      </button>
+    </form>
 
     <div class="divider">
       <span>or</span>
     </div>
 
-    <button class="btn secondary">
-      Continue with Google
+    <button class="btn secondary" disabled>
+      Continue with Google (coming soon)
     </button>
   </main>
 
