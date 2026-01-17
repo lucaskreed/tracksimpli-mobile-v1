@@ -14,6 +14,6 @@ if (form && emailInput) {
     localStorage.setItem("loggedIn", "true");
     localStorage.setItem("userEmail", email);
 
-    window.location.href = "screens/dashboard.html";
+    window.location.href = "../screens/dashboard.html";
   });
 }
