@@ -1,24 +1,56 @@
-﻿<script type="module">
-  import { supabase } from "../js/supabase.js";
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Dashboard</title>
 
-  // 1. Check session
-  const { data: sessionData } = await supabase.auth.getSession();
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#f7f6f3" />
 
-  if (!sessionData.session) {
-    window.location.href = "../auth/login.html";
-  }
+    <link rel="stylesheet" href="../css/tailwind.css" />
+  </head>
 
-  const user = sessionData.session.user;
+  <body class="min-h-screen bg-[#f7f6f3] text-slate-900 antialiased">
+    <main class="mx-auto max-w-4xl px-6 py-10">
+      <header class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-semibold tracking-tight">Dashboard</h1>
+          <p class="mt-1 text-sm text-slate-600" id="userEmail">Loading…</p>
+        </div>
 
-  // 2. Ensure profile exists
-  await supabase.from("profiles").upsert({
-    id: user.id,
-    email: user.email
-  });
+        <button
+          id="logoutBtn"
+          class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-200"
+        >
+          Log out
+        </button>
+      </header>
 
-  // 3. Show something so you know it worked
-  document.body.insertAdjacentHTML(
-    "beforeend",
-    `<p>Logged in as ${user.email}</p>`
-  );
-</script>
+      <section class="mt-8 rounded-2xl bg-white/80 p-6 shadow-sm ring-1 ring-black/5 backdrop-blur">
+        <p class="text-sm text-slate-700">
+          You’re logged in. Put your real dashboard content here.
+        </p>
+      </section>
+    </main>
+
+    <script type="module">
+      import { supabase } from "../js/supabase.js";
+
+      const emailEl = document.getElementById("userEmail");
+      const logoutBtn = document.getElementById("logoutBtn");
+
+      const { data } = await supabase.auth.getSession();
+      if (!data.session) {
+        window.location.href = "../auth/login.html";
+      } else {
+        emailEl.textContent = data.session.user?.email || "Logged in";
+      }
+
+      logoutBtn.addEventListener("click", async () => {
+        await supabase.auth.signOut();
+        window.location.href = "../auth/login.html";
+      });
+    </script>
+  </body>
+</html>
