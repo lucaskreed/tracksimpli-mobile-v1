@@ -2,13 +2,10 @@ import { supabase } from "./supabase.js";
 
 const form = document.getElementById("authForm");
 const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
 const submitBtn = document.getElementById("submitBtn");
 const statusEl = document.getElementById("status");
-
-// simple anti-spam + rate-limit friendly cooldown
-let sending = false;
-let lastSentAt = 0;
-const COOLDOWN_MS = 60_000; // 60s
+const googleBtn = document.getElementById("googleBtn");
 
 function setStatus(msg, type = "info") {
   if (!statusEl) return;
@@ -19,69 +16,78 @@ function setStatus(msg, type = "info") {
   statusEl.textContent = msg;
 }
 
-function setButton(loading) {
-  if (!submitBtn) return;
-  submitBtn.disabled = loading;
-  const mode = form?.dataset?.authMode || "login";
-  if (!loading) {
-    submitBtn.textContent = mode === "signup" ? "Sign up with email" : "Continue with email";
-  } else {
-    submitBtn.textContent = "Sending…";
-  }
+function setLoading(isLoading, btn, textWhenLoading) {
+  if (!btn) return;
+  btn.disabled = isLoading;
+  if (isLoading) btn.textContent = textWhenLoading;
 }
 
-if (form && emailInput) {
+const DASHBOARD_URL = `${window.location.origin}/screens/dashboard.html`;
+
+// If already signed in, skip auth pages
+{
+  const { data } = await supabase.auth.getSession();
+  if (data.session) window.location.href = "../screens/dashboard.html";
+}
+
+// Password login/signup
+if (form && emailInput && passwordInput) {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-
-    const email = emailInput.value.trim();
-    if (!email) {
-      emailInput.focus();
-      return;
-    }
-
-    // cooldown to avoid “email rate limit exceeded”
-    const now = Date.now();
-    if (now - lastSentAt < COOLDOWN_MS) {
-      const secLeft = Math.ceil((COOLDOWN_MS - (now - lastSentAt)) / 1000);
-      setStatus(`Please wait ${secLeft}s before requesting another email.`, "error");
-      return;
-    }
-
-    if (sending) return;
-    sending = true;
-    setButton(true);
     setStatus("");
 
-    const mode = form.dataset.authMode; // "login" or "signup"
-    const shouldCreateUser = mode === "signup";
+    const mode = form.dataset.mode; // "login" | "signup"
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
 
-    const redirectTo = `${window.location.origin}/screens/dashboard.html`;
+    if (!email) return emailInput.focus();
+    if (!password) return passwordInput.focus();
 
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
+    try {
+      setLoading(true, submitBtn, mode === "signup" ? "Creating…" : "Signing in…");
+
+      if (mode === "signup") {
+        const { data, error } = await supabase.auth.signUp({ email, password });
+
+        if (error) throw error;
+
+        // If email confirmations are ON, user might need to confirm before session exists
+        if (!data.session) {
+          setStatus("Account created. Check your email to confirm, then log in.", "success");
+        } else {
+          window.location.href = "../screens/dashboard.html";
+        }
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+
+        window.location.href = "../screens/dashboard.html";
+      }
+    } catch (err) {
+      const msg = err?.message || "Something went wrong.";
+      setStatus(msg, "error");
+    } finally {
+      setLoading(false, submitBtn, mode === "signup" ? "Create account" : "Log in");
+    }
+  });
+}
+
+// Google OAuth (works on both pages)
+if (googleBtn) {
+  googleBtn.addEventListener("click", async () => {
+    setStatus("");
+    setLoading(true, googleBtn, "Redirecting…");
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
       options: {
-        shouldCreateUser,
-        emailRedirectTo: redirectTo,
+        redirectTo: "https://www.capableapp.co/screens/dashboard.html",
       },
     });
 
-    sending = false;
-    setButton(false);
-
     if (error) {
-      // common nice messages
-      if (!shouldCreateUser && /user|sign up|signup|not found/i.test(error.message)) {
-        setStatus("No account found for that email. Please sign up first.", "error");
-      } else if (/rate limit/i.test(error.message)) {
-        setStatus("Too many requests—wait a minute and try again.", "error");
-      } else {
-        setStatus(error.message, "error");
-      }
-      return;
+      setLoading(false, googleBtn, "Continue with Google");
+      setStatus(error.message, "error");
     }
-
-    lastSentAt = Date.now();
-    setStatus("Check your email for the sign-in link.", "success");
   });
 }
