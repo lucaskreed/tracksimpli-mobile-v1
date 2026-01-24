@@ -4,17 +4,35 @@
     <meta charset="utf-8" />
     <title>Log in</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f7f6f3" />
     <link rel="stylesheet" href="../css/tailwind.css" />
   </head>
 
   <body class="min-h-screen bg-[#f7f6f3] text-slate-900 antialiased">
     <main class="mx-auto flex min-h-screen max-w-md items-center px-6 py-12">
       <section class="w-full rounded-2xl bg-white/80 p-8 shadow-sm ring-1 ring-black/5 backdrop-blur">
-        <h1 class="text-2xl font-semibold tracking-tight">Welcome back</h1>
-        <p class="mt-2 text-sm text-slate-600">Log in with your password or Google.</p>
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-2xl font-semibold tracking-tight">Welcome back</h1>
+            <p class="mt-2 text-sm text-slate-600">Log in with Google or your password.</p>
+          </div>
+        </div>
 
-        <!-- Password login -->
-        <form id="authForm" data-mode="login" class="mt-6 space-y-4">
+        <button
+          id="googleBtn"
+          type="button"
+          class="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-300 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          Continue with Google
+        </button>
+
+        <div class="my-6 flex items-center gap-3">
+          <div class="h-px flex-1 bg-slate-200"></div>
+          <span class="text-xs font-medium uppercase tracking-wide text-slate-500">or</span>
+          <div class="h-px flex-1 bg-slate-200"></div>
+        </div>
+
+        <form id="authForm" data-mode="login" class="space-y-4">
           <div>
             <label for="email" class="sr-only">Email</label>
             <input
@@ -39,39 +57,32 @@
             />
           </div>
 
+          <div class="flex items-center justify-between">
+            <a
+              href="./reset.html"
+              class="text-sm text-slate-600 underline decoration-slate-300 underline-offset-4 hover:text-slate-900"
+            >
+              Forgot password?
+            </a>
+
+            <a
+              href="./signup.html"
+              class="text-sm font-medium text-slate-900 underline decoration-slate-300 underline-offset-4 hover:text-slate-700"
+            >
+              Create account
+            </a>
+          </div>
+
           <button
             id="submitBtn"
             type="submit"
-            class="inline-flex w-full items-center justify-center rounded-xl bg-slate-900 px-4 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-300 disabled:cursor-not-allowed disabled:opacity-60"
+            class="inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 shadow-sm transition hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-200 disabled:cursor-not-allowed disabled:opacity-60"
           >
             Log in
           </button>
 
           <p id="status" class="hidden text-sm"></p>
         </form>
-
-        <!-- Divider -->
-        <div class="my-6 flex items-center gap-3">
-          <div class="h-px flex-1 bg-slate-200"></div>
-          <span class="text-xs font-medium uppercase tracking-wide text-slate-500">or</span>
-          <div class="h-px flex-1 bg-slate-200"></div>
-        </div>
-
-        <!-- Google -->
-        <button
-          id="googleBtn"
-          type="button"
-          class="inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 shadow-sm transition hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-200 disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          Continue with Google
-        </button>
-
-        <p class="mt-6 text-sm text-slate-600">
-          New here?
-          <a href="./signup.html" class="font-medium text-slate-900 underline decoration-slate-300 underline-offset-4 hover:text-slate-700">
-            Create an account
-          </a>
-        </p>
       </section>
     </main>
 

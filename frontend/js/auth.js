@@ -7,6 +7,8 @@ const submitBtn = document.getElementById("submitBtn");
 const statusEl = document.getElementById("status");
 const googleBtn = document.getElementById("googleBtn");
 
+const DASHBOARD_REL = "../screens/dashboard.html";
+
 function setStatus(msg, type = "info") {
   if (!statusEl) return;
   statusEl.classList.remove("hidden", "text-slate-600", "text-red-600", "text-green-700");
@@ -16,18 +18,41 @@ function setStatus(msg, type = "info") {
   statusEl.textContent = msg;
 }
 
-function setLoading(isLoading, btn, textWhenLoading) {
+function setBtn(btn, loading, loadingText, normalText) {
   if (!btn) return;
-  btn.disabled = isLoading;
-  if (isLoading) btn.textContent = textWhenLoading;
+  btn.disabled = loading;
+  btn.textContent = loading ? loadingText : normalText;
 }
 
-const DASHBOARD_URL = `${window.location.origin}/screens/dashboard.html`;
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
 
-// If already signed in, skip auth pages
+// If already logged in, skip auth pages
 {
   const { data } = await supabase.auth.getSession();
-  if (data.session) window.location.href = "../screens/dashboard.html";
+  if (data.session) window.location.href = DASHBOARD_REL;
+}
+
+// Google OAuth (works on both login/signup pages)
+if (googleBtn) {
+  googleBtn.addEventListener("click", async () => {
+    setStatus("");
+    setBtn(googleBtn, true, "Redirecting…", "Continue with Google");
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        // Works on localhost and production (as long as you add redirect URLs in Supabase)
+        redirectTo: `${window.location.origin}/screens/dashboard.html`,
+      },
+    });
+
+    if (error) {
+      setStatus(error.message, "error");
+      setBtn(googleBtn, false, "", "Continue with Google");
+    }
+  });
 }
 
 // Password login/signup
@@ -40,54 +65,55 @@ if (form && emailInput && passwordInput) {
     const email = emailInput.value.trim();
     const password = passwordInput.value;
 
-    if (!email) return emailInput.focus();
-    if (!password) return passwordInput.focus();
+    if (!isValidEmail(email)) return setStatus("Enter a valid email.", "error");
+    if (!password) return setStatus("Enter your password.", "error");
+    if (mode === "signup" && password.length < 8) {
+      return setStatus("Password must be at least 8 characters.", "error");
+    }
+
+    const normalText = mode === "signup" ? "Create account" : "Log in";
+    setBtn(submitBtn, true, mode === "signup" ? "Creating…" : "Signing in…", normalText);
 
     try {
-      setLoading(true, submitBtn, mode === "signup" ? "Creating…" : "Signing in…");
-
       if (mode === "signup") {
         const { data, error } = await supabase.auth.signUp({ email, password });
 
+        // If Supabase returns an error, show it
         if (error) throw error;
 
-        // If email confirmations are ON, user might need to confirm before session exists
+        /**
+         * "One account per email" UX:
+         * - If the email already exists, Supabase may not give a clean "duplicate" error.
+         * - Also, if "Confirm email" is ON, you'll get a user but no session.
+         *
+         * So we show a safe message that covers both cases and prevents confusion.
+         */
         if (!data.session) {
-          setStatus("Account created. Check your email to confirm, then log in.", "success");
+          setStatus(
+            "If this email is new, your account was created. If it already exists, please log in instead.",
+            "success"
+          );
+          // Optional: send them to login automatically:
+          // window.location.href = "./login.html";
         } else {
-          window.location.href = "../screens/dashboard.html";
+          window.location.href = DASHBOARD_REL;
         }
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-
-        window.location.href = "../screens/dashboard.html";
+        window.location.href = DASHBOARD_REL;
       }
     } catch (err) {
       const msg = err?.message || "Something went wrong.";
-      setStatus(msg, "error");
+
+      // Friendlier message for “wrong password / no account”
+      if (/invalid login credentials/i.test(msg)) {
+        setStatus("Incorrect email or password. Try again, or use Google.", "error");
+      } else {
+        setStatus(msg, "error");
+      }
     } finally {
-      setLoading(false, submitBtn, mode === "signup" ? "Create account" : "Log in");
-    }
-  });
-}
-
-// Google OAuth (works on both pages)
-if (googleBtn) {
-  googleBtn.addEventListener("click", async () => {
-    setStatus("");
-    setLoading(true, googleBtn, "Redirecting…");
-
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: "https://www.capableapp.co/screens/dashboard.html",
-      },
-    });
-
-    if (error) {
-      setLoading(false, googleBtn, "Continue with Google");
-      setStatus(error.message, "error");
+      setBtn(submitBtn, false, "", normalText);
     }
   });
 }
