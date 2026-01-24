@@ -1,50 +1,72 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Continue</title>
+  <head>
+    <meta charset="utf-8" />
+    <title>Continue</title>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="color-scheme" content="light" />
-  <meta name="theme-color" content="#f7f6f3" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#f7f6f3" />
 
-  <link rel="stylesheet" href="../css/base.css" />
-  <link rel="stylesheet" href="../css/auth.css" />
-</head>
+    <!-- Tailwind (generated) -->
+    <link rel="stylesheet" href="../css/tailwind.css" />
 
-<body class="auth light">
-  <main class="auth-flow">
-    <h1 class="auth-question">What’s your email?</h1>
+    <!-- Optional: keep your old CSS while migrating (remove later) -->
+    <!-- <link rel="stylesheet" href="../css/base.css" /> -->
+    <!-- <link rel="stylesheet" href="../css/auth.css" /> -->
+  </head>
 
-    <p class="auth-subtext">
-      We’ll use this to sign you in and keep your progress connected.
-    </p>
+  <body class="min-h-screen bg-[#f7f6f3] text-slate-900 antialiased">
+    <main class="mx-auto flex min-h-screen max-w-md items-center px-6 py-12">
+      <section class="w-full rounded-2xl bg-white/80 p-8 shadow-sm ring-1 ring-black/5 backdrop-blur">
+        <h1 class="text-2xl font-semibold tracking-tight">What’s your email?</h1>
 
-    <form id="loginForm">
-      <div class="email-input">
-        <input
-          id="email"
-          type="email"
-          placeholder="you@example.com"
-          autocomplete="email"
-          required
-        />
-      </div>
+        <p class="mt-2 text-sm text-slate-600">We’ll send you a code to continue.</p>
 
-      <button class="btn primary" type="submit">
-        Continue with email
-      </button>
-    </form>
+        <form id="loginForm" class="mt-6 space-y-4">
+          <div>
+            <label for="email" class="sr-only">Email</label>
+            <input
+              id="email"
+              type="email"
+              placeholder="you@example.com"
+              autocomplete="email"
+              required
+              class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm placeholder:text-slate-400 outline-none focus:border-slate-300 focus:ring-4 focus:ring-slate-200"
+            />
+          </div>
 
-    <div class="divider">
-      <span>or</span>
-    </div>
+          <button
+            type="submit"
+            class="inline-flex w-full items-center justify-center rounded-xl bg-slate-900 px-4 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-300"
+          >
+            Continue with email
+          </button>
+        </form>
 
-    <button class="btn secondary" disabled>
-      Continue with Google (coming soon)
-    </button>
-  </main>
+        <div class="my-6 flex items-center gap-3">
+          <div class="h-px flex-1 bg-slate-200"></div>
+          <span class="text-xs font-medium uppercase tracking-wide text-slate-500">or</span>
+          <div class="h-px flex-1 bg-slate-200"></div>
+        </div>
 
-<script type="module" src="../js/auth.js"></script>
-</body>
+        <button
+          class="inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-500 shadow-sm disabled:cursor-not-allowed disabled:opacity-60"
+          disabled
+          aria-disabled="true"
+        >
+          Continue with Google (coming soon)
+        </button>
+
+        <p class="mt-6 text-xs text-slate-500">
+          By continuing, you agree to our
+          <a href="#" class="underline decoration-slate-300 underline-offset-4 hover:text-slate-700">Terms</a>
+          and
+          <a href="#" class="underline decoration-slate-300 underline-offset-4 hover:text-slate-700">Privacy Policy</a>.
+        </p>
+      </section>
+    </main>
+
+    <script type="module" src="../js/auth.js"></script>
+  </body>
 </html>
